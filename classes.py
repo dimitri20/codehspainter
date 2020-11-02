@@ -39,7 +39,7 @@ class ImageToJsCode:
 			}
 
 			function setColor(pixels, pxPos, color){
-				pixels[pxPos[0]][pxPos[1]];
+				pixels[pxPos[0]][pxPos[1]].setColor(color);
 			}
 
 			function addPxs(pixels){
@@ -58,19 +58,16 @@ class ImageToJsCode:
 		with open(f'{self.imagePath}.csv', 'r') as ts:
 			data = ts.readlines()
 			codeFile.write(f"createPxl({int(len(data)/400)});\n")
-			for item in data:
-				codeFile.write(f""" 
+			codeFile.write(f""" 
 
-					for(var i = 0; i < {len(data)}; i++){{
-						var pxl_dat[i] = {item};
+				var data = {data};
+				for(var i = 0; i < data.length; i++){{
+					for(var j = 0; j < data[i].length; j++){{
+						setColor(pixels, [i, j], data[i][j]);
 					}}
+				}}
 
-					for(var i = 0; i < data.length; i++){{
-						var color = new Color(pxl_dat[i]);
-						setColor(pixels, [{data.index(item)%401}, {int(data.index(item)/400)}], color);
-					}}
-
-				    """)
+			""")
 
 		codeFile.close()
 
